@@ -18,11 +18,13 @@ class SplashScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.amber,
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset("images/logo.png"),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset("images/logo.png"),
+            ],
+          ),
         ),
       ),
     );
