@@ -1,21 +1,21 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_berita/pages/register_page.dart';
-import 'package:flutter_berita/utils/costume_input.dart';
+import 'package:flutter_berita/pages/login_page.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+import '../utils/costume_input.dart' show CostumeInput;
+
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
   var username = TextEditingController();
   var password = TextEditingController();
   var fullName = TextEditingController();
   var email = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,11 +24,10 @@ class _LoginPageState extends State<LoginPage> {
           padding: EdgeInsets.all(20),
           child: Form(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(height: 30),
                 Text(
-                  "Login",
+                  "Register",
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 30),
@@ -48,6 +47,22 @@ class _LoginPageState extends State<LoginPage> {
                   textHint: "*****",
                   textInputType: TextInputType.text,
                 ),
+                SizedBox(height: 10),
+                CostumeInput(
+                  label: "Fullname",
+                  textEditingController: fullName,
+                  icon: Icons.key,
+                  textHint: "Roni Putra",
+                  textInputType: TextInputType.text,
+                ),
+                SizedBox(height: 10),
+                CostumeInput(
+                  label: "Email",
+                  textEditingController: email,
+                  icon: Icons.email,
+                  textHint: "rn.putra@gmail.com",
+                  textInputType: TextInputType.emailAddress,
+                ),
                 SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {},
@@ -63,24 +78,23 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(height: 20),
                 RichText(
                   text: TextSpan(
-                    text: "Don't have an account? ",
+                    text: "Already have an account? ",
                     style: TextStyle(color: Colors.black, fontSize: 16),
                     children: [
                       TextSpan(
-                        text: "Sign Up",
+                        text: "Login",
                         style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (_) => const RegisterPage()),
+                              MaterialPageRoute(builder: (_) => const LoginPage()),
                             );
                           },
                       ),
                     ],
                   ),
                 )
-
               ],
             ),
           ),
