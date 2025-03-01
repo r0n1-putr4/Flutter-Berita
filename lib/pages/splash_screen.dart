@@ -12,7 +12,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
   @override
   void initState() {
     // TODO: implement initState
@@ -21,9 +20,9 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void checkSession() async {
-   Map<String, String?> session = await SessionManager.getSession();
+    Map<String, String?> session = await SessionManager.getSession();
     Future.delayed(Duration(seconds: 2), () {
-      if (session['user_token'] != null) {
+      if (session['id'] != null) {
         Navigator.pushReplacementNamed(context, '/home');
       } else {
         Navigator.pushReplacementNamed(context, '/login');
@@ -34,7 +33,14 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
+      body: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [Image.asset("images/logo.png")],
+          ),
+        ),
+      ),
     );
   }
 }

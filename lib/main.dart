@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_berita/pages/home_page.dart';
 import 'package:flutter_berita/pages/login_page.dart';
 import 'package:flutter_berita/pages/splash_screen.dart';
-import 'package:flutter_berita/utils/session.dart';
 
 void main() {
   runApp(const MyApp());

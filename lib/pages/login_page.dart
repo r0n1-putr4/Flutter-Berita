@@ -1,10 +1,15 @@
+import 'package:awesome_dialog/awesome_dialog.dart'
+    show AnimType, AwesomeDialog, DialogType;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_berita/pages/home_page.dart';
 import 'package:flutter_berita/pages/register_page.dart';
-import 'package:flutter_berita/utils/costume_input.dart';
-
+import 'package:logger/logger.dart';
+import 'package:http/http.dart' as http;
+import '../utils/base_url.dart';
+import '../utils/costume_input.dart';
 import '../utils/session.dart';
+import 'package:flutter_berita/models/login_model.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -15,11 +20,10 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-
   var username = TextEditingController();
   var password = TextEditingController();
-  var fullName = TextEditingController();
-  var email = TextEditingController();
+  bool isLoading = false;
+  var logger = Logger();
 
   @override
   void initState() {
@@ -27,12 +31,44 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
   }
 
-  void login() async {
-    // String username = _usernameController.text;
-    // String password = _passwordController.text;
-
-    await SessionManager.saveSession("fake_token_123","12344");
-    Navigator.pushReplacementNamed(context, '/home');
+  Future<void> _login() async {
+    try {
+      isLoading = true;
+      http.Response hasil = await http.post(
+        Uri.parse("${ApiConfig.baseUrl}/login.php"),
+        body: {"username": username.text, "password": password.text},
+      );
+      final loginModel = loginModelFromJson(hasil.body);
+      if (loginModel.success) {
+        setState(() {
+          isLoading = false;
+        });
+        final dataUser = loginModel.data;
+        await SessionManager.saveSession(
+          dataUser!.id,
+          dataUser.username,
+          dataUser.fullname,
+        );
+        Navigator.pushReplacementNamed(context, '/home');
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.warning,
+          animType: AnimType.scale,
+          title: 'Informasi Login',
+          desc: loginModel.message,
+          autoHide: const Duration(seconds: 2),
+        ).show();
+      }
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      logger.d("Kesalahan ${e}");
+    }
   }
 
   @override
@@ -42,11 +78,11 @@ class _LoginPageState extends State<LoginPage> {
         child: Padding(
           padding: EdgeInsets.all(20),
           child: Form(
+            key: _formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("data "),
-                SizedBox(height: 30),
+                SizedBox(height: 25),
                 Text(
                   "Login",
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
@@ -69,20 +105,31 @@ class _LoginPageState extends State<LoginPage> {
                   textInputType: TextInputType.text,
                 ),
                 SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      login();
-                    });
-                  },
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: Size(double.infinity, 50),
-                    // Full width, height: 50
-                    backgroundColor: Colors.red,
-                    // Change button color
-                    foregroundColor: Colors.white, // Change text color
-                  ),
-                  child: Text("SAVE"),
+                Center(
+                  child:
+                      isLoading
+                          ? CircularProgressIndicator()
+                          : ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: Size(double.infinity, 50),
+                              // Full width, height: 50
+                              backgroundColor: Colors.red,
+                              // Change button color
+                              foregroundColor:
+                                  Colors.white, // Change text color
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                if (_formKey.currentState!.validate()) {
+                                  _login();
+                                }
+                              });
+                            },
+                            child: Text(
+                              "LOGIN",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
                 ),
                 SizedBox(height: 20),
                 RichText(
