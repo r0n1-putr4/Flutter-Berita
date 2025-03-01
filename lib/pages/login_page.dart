@@ -31,7 +31,7 @@ class _LoginPageState extends State<LoginPage> {
     // String username = _usernameController.text;
     // String password = _passwordController.text;
 
-    await SessionManager.saveSession("fake_token_123");
+    await SessionManager.saveSession("fake_token_123","12344");
     Navigator.pushReplacementNamed(context, '/home');
   }
 

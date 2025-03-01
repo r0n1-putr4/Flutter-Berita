@@ -11,16 +11,27 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  String token = "";
+  String userId = "";
 
   void logout() async{
     await SessionManager.clearSession();
     Navigator.pushReplacementNamed(context, '/login');
   }
 
+  void _loadSession() async {
+    Map<String, String?> session = await SessionManager.getSession();
+    setState(() {
+      token = session['user_token'] ?? "No Token";
+      userId = session['user_id'] ?? "No User ID";
+    });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _loadSession();
     // getLogin();
   }
 
@@ -30,7 +41,7 @@ class _HomePageState extends State<HomePage> {
       body: Center(
         child: Column(
           children: [
-            Text("data "),
+            Text("data $token"),
             ElevatedButton(
               onPressed: () {
                 setState(() {
