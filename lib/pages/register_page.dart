@@ -1,8 +1,13 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_berita/pages/login_page.dart';
+import 'package:http/http.dart' as http;
+import 'dart:async';
 
-import '../utils/costume_input.dart' show CostumeInput;
+import '../utils/base_url.dart';
+import '../utils/costume_input.dart';
+import 'package:flutter_berita/models/register_model.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -12,10 +17,65 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  final _formKey = GlobalKey<FormState>();
+
   var username = TextEditingController();
   var password = TextEditingController();
   var fullName = TextEditingController();
   var email = TextEditingController();
+
+  bool isLoading = false;
+
+  Future<void> _register() async {
+    try {
+      isLoading = true;
+      http.Response hasil = await http.post(
+        Uri.parse("${ApiConfig.baseUrl}/register.php"),
+        body: {
+          "username": username.text,
+          "password": password.text,
+          "fullname": fullName.text,
+          "email": email.text,
+        },
+      );
+      final registerModel = registerModelFromJson(hasil.body);
+      if (registerModel.success) {
+        setState(() {
+          isLoading = false;
+        });
+
+
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => const LoginPage()),
+          (route) => false,
+        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(registerModel.message)));
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.warning,
+          animType: AnimType.scale,
+          title: 'Informasi Login',
+          desc: registerModel.message,
+          autoHide: const Duration(seconds: 2),
+        ).show();
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Kesalahan : ${e}")));
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,6 +83,7 @@ class _RegisterPageState extends State<RegisterPage> {
         child: Padding(
           padding: EdgeInsets.all(20),
           child: Form(
+            key: _formKey,
             child: Column(
               children: [
                 SizedBox(height: 30),
@@ -64,16 +125,28 @@ class _RegisterPageState extends State<RegisterPage> {
                   textInputType: TextInputType.emailAddress,
                 ),
                 SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: Size(double.infinity, 50),
-                    // Full width, height: 50
-                    backgroundColor: Colors.red,
-                    // Change button color
-                    foregroundColor: Colors.white, // Change text color
-                  ),
-                  child: Text("SAVE"),
+                Center(
+                  child:
+                      isLoading
+                          ? CircularProgressIndicator()
+                          : ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                if (_formKey.currentState!.validate()) {
+                                  _register();
+                                }
+                              });
+                            },
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: Size(double.infinity, 50),
+                              // Full width, height: 50
+                              backgroundColor: Colors.red,
+                              // Change button color
+                              foregroundColor:
+                                  Colors.white, // Change text color
+                            ),
+                            child: Text("SAVE"),
+                          ),
                 ),
                 SizedBox(height: 20),
                 RichText(
@@ -83,18 +156,24 @@ class _RegisterPageState extends State<RegisterPage> {
                     children: [
                       TextSpan(
                         text: "Login",
-                        style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (_) => const LoginPage()),
-                            );
-                          },
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        recognizer:
+                            TapGestureRecognizer()
+                              ..onTap = () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const LoginPage(),
+                                  ),
+                                );
+                              },
                       ),
                     ],
                   ),
-                )
+                ),
               ],
             ),
           ),
