@@ -48,6 +48,7 @@ class _LoginPageState extends State<LoginPage> {
           dataUser!.id,
           dataUser.username,
           dataUser.fullname,
+          dataUser.email
         );
         Navigator.pushReplacementNamed(context, '/home');
       } else {

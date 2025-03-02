@@ -38,22 +38,26 @@ class Data {
   String id;
   String username;
   String fullname;
+  String email;
 
   Data({
     required this.id,
     required this.username,
     required this.fullname,
+    required this.email,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
     id: json["id"],
     username: json["username"],
     fullname: json["fullname"],
+    email: json["email"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "username": username,
     "fullname": fullname,
+    "email": email,
   };
 }
