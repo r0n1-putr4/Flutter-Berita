@@ -4,8 +4,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 
-
-
 class BeritaAddPage extends StatefulWidget {
   const BeritaAddPage({super.key});
 
