@@ -1,16 +1,23 @@
 # flutter_berita
 
-A new Flutter project.
+Project App Berita.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+- [Generate Model](https://app.quicktype.io/?l=dart)
+- [Pub Dev](https://pub.dev/)
 
-A few resources to get you started if this is your first Flutter project:
+## Dependencies
+- [http: ^1.3.0]
+- [flutter_rating_bar: ^4.0.1]
+- [logger: ^2.5.0]
+- [image_picker: ^1.0.7]
+- [awesome_dialog: ^3.2.1]
+- [shared_preferences: ^2.5.2]
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## SDK Flutter 
+environment:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+sdk: ^3.7.0
+
+
