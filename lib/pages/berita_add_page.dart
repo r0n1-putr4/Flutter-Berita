@@ -92,13 +92,13 @@ class _BeritaAddPageState extends State<BeritaAddPage> {
                   textHint: "Judul Berita",
                   textInputType: TextInputType.text,
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 15),
                 Text(
                   "Pilih Gambar",
                   textAlign: TextAlign.start,
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 15),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     minimumSize: Size(double.infinity, 50),
@@ -111,6 +111,11 @@ class _BeritaAddPageState extends State<BeritaAddPage> {
                   onPressed: () => _alertDialog(context),
                   child: Text("Pilih"),
                 ),
+                SizedBox(height: 5),
+                _image != null
+                    ? Center(child: Image.file(_image!, height: 200))
+                    : Text("No image selected"),
+                SizedBox(height: 15),
                 Text(
                   "Isi Berita",
                   textAlign: TextAlign.start,
