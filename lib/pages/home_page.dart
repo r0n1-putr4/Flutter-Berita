@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
+import 'package:flutter_berita/models/response_model.dart';
 
 import '../utils/base_url.dart';
 
@@ -43,6 +43,35 @@ class _HomePageState extends State<HomePage> {
     return null;
   }
 
+  Future<void> _delBerita(String id) async {
+    try {
+      http.Response hasil = await http.post(
+        Uri.parse("${ApiConfig.baseUrl}/del_berita.php"),
+        body: {"id": id},
+      );
+      final deleteModel = responseModelFromJson(hasil.body);
+      if (deleteModel.success) {
+        setState(() {
+          dataJson = _getData(judul);
+        });
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(deleteModel.message)));
+      } else {
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.warning,
+          animType: AnimType.scale,
+          title: 'Informasi Delete',
+          desc: deleteModel.message,
+          autoHide: const Duration(seconds: 2),
+        ).show();
+      }
+    } catch (e) {
+      logger.d("Kesalahan delete $e");
+    }
+  }
+
   void _logout() async {
     await SessionManager.clearSession();
     Navigator.pushReplacementNamed(context, '/login');
@@ -63,7 +92,6 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _loadSession();
     dataJson = _getData(judul);
-    // getLogin();
   }
 
   @override
@@ -129,7 +157,7 @@ class _HomePageState extends State<HomePage> {
             ),
             ListTile(
               title: Text("Profile"),
-              onTap: (){
+              onTap: () {
                 null;
               },
             ),
@@ -163,18 +191,34 @@ class _HomePageState extends State<HomePage> {
                     },
                     child: Slidable(
                       // Specify a key if the Slidable is dismissible.
-                      key: const ValueKey(0),
+                      key: ValueKey(0),
                       // The start action pane is the one at the left or the top side.
                       startActionPane: ActionPane(
                         // A motion is a widget used to control how the pane animates.
-                        motion: const ScrollMotion(),
-                        // A pane can dismiss the Slidable.
-                        dismissible: DismissiblePane(onDismissed: () {}),
-                        // All actions are defined in the children parameter.
-                        children: const [
+                        motion: ScrollMotion(),
+
+                        children: [
                           // A SlidableAction can have an icon and/or a label.
                           SlidableAction(
-                            onPressed: null,
+                            onPressed:
+                                (_) =>
+                                    AwesomeDialog(
+                                      context: context,
+                                      dialogType: DialogType.warning,
+                                      headerAnimationLoop: false,
+                                      animType: AnimType.bottomSlide,
+                                      title: 'Delete',
+                                      desc:
+                                          'Apakah anda yakin ingin hapus ${berita[index].judul}?',
+                                      buttonsTextStyle: const TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                      showCloseIcon: true,
+                                      btnCancelOnPress: () {},
+                                      btnOkOnPress: () {
+                                        _delBerita(berita[index].id);
+                                      },
+                                    ).show(),
                             backgroundColor: Color(0xFFFE4A49),
                             foregroundColor: Colors.white,
                             icon: Icons.delete,
@@ -182,6 +226,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ],
                       ),
+
                       child: Card(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
