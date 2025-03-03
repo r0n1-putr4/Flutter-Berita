@@ -255,9 +255,7 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.redAccent,
         child: Icon(Icons.add, size: 30, color: Colors.white),
         onPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("FAB Clicked! Add new news. ${judul}")),
-          );
+          Navigator.pushReplacementNamed(context, '/addBerita');
         },
       ),
     );
