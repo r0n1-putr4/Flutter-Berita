@@ -1,11 +1,14 @@
 import 'dart:io';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_berita/pages/home_page.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_berita/models/register_model.dart';
 
+import '../utils/base_url.dart';
 import '../utils/costume_input.dart';
 
 class BeritaAddPage extends StatefulWidget {
@@ -24,6 +27,7 @@ class _BeritaAddPageState extends State<BeritaAddPage> {
   var logger = Logger();
 
   bool isLoading = false;
+  final _formKey = GlobalKey<FormState>();
 
   void _alertDialog(BuildContext context) {
     showDialog(
@@ -67,6 +71,57 @@ class _BeritaAddPageState extends State<BeritaAddPage> {
     }
   }
 
+  Future<void> _uploadImage(BuildContext context) async {
+    try {
+      isLoading = true;
+      if (_image == null) {
+        setState(() {
+          isLoading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Please select an image and enter text.")),
+        );
+        return;
+      }
+
+      final url = Uri.parse('${ApiConfig.baseUrl}/add_berita.php');
+      var request = http.MultipartRequest('POST', url);
+      request.fields['judul'] = judul.text;
+      request.fields['isiBerita'] = isiBerita.text;
+      request.files.add(
+        await http.MultipartFile.fromPath('fileGambar', _image!.path),
+      );
+      http.StreamedResponse streamedResponse = await request.send();
+      http.Response response = await http.Response.fromStream(streamedResponse);
+      final uploadResponse = registerModelFromJson(response.body);
+      if (uploadResponse.success) {
+        setState(() {
+          isLoading = false;
+        });
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => const HomePage()),
+              (route) => false,
+        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(uploadResponse.message)));
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(uploadResponse.message)));
+      }
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      logger.d("Pesan Error ${e.toString()}");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,6 +129,7 @@ class _BeritaAddPageState extends State<BeritaAddPage> {
         child: Padding(
           padding: EdgeInsets.all(10),
           child: Form(
+            key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -122,13 +178,17 @@ class _BeritaAddPageState extends State<BeritaAddPage> {
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 10),
-                TextField(
+                TextFormField(
                   controller: isiBerita,
+
                   maxLines: 5, // Allows multiple lines
                   decoration: InputDecoration(
                     hintText: 'Enter your text here...',
                     border: OutlineInputBorder(),
                   ),
+                  validator: (val) {
+                    return val!.isEmpty ? "Tidak boleh kosong" : null;
+                  },
                 ),
                 SizedBox(height: 15),
                 ElevatedButton(
@@ -140,7 +200,13 @@ class _BeritaAddPageState extends State<BeritaAddPage> {
                     foregroundColor:
                     Colors.white, // Change text color
                   ),
-                  onPressed: () => null,
+                  onPressed: () {
+                    setState(() {
+                      if (_formKey.currentState!.validate()) {
+                        _uploadImage(context);
+                      }
+                    });
+                  },
                   child: Text("SIMPAN"),
                 ),
               ],
