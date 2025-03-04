@@ -1,11 +1,9 @@
 import 'dart:io';
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_berita/pages/home_page.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_berita/models/register_model.dart';
 
 import '../utils/base_url.dart';
@@ -84,12 +82,12 @@ class _BeritaAddPageState extends State<BeritaAddPage> {
         return;
       }
 
-      final url = Uri.parse('${ApiConfig.baseUrl}/add_berita.php');
+      final url = Uri.parse('${ApiConfig.baseUrl}/kontens');
       var request = http.MultipartRequest('POST', url);
       request.fields['judul'] = judul.text;
-      request.fields['isiBerita'] = isiBerita.text;
+      request.fields['isi'] = isiBerita.text;
       request.files.add(
-        await http.MultipartFile.fromPath('fileGambar', _image!.path),
+        await http.MultipartFile.fromPath('gambar', _image!.path),
       );
       http.StreamedResponse streamedResponse = await request.send();
       http.Response response = await http.Response.fromStream(streamedResponse);

@@ -3,6 +3,7 @@
 //     final loginModel = loginModelFromJson(jsonString);
 
 import 'dart:convert';
+import 'dart:ffi';
 
 LoginModel loginModelFromJson(String str) => LoginModel.fromJson(json.decode(str));
 
@@ -35,16 +36,18 @@ class LoginModel {
 }
 
 class Data {
-  String id;
+  int id;
   String username;
   String fullname;
   String email;
+  String gambar;
 
   Data({
     required this.id,
     required this.username,
     required this.fullname,
     required this.email,
+    required this.gambar,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
@@ -52,6 +55,7 @@ class Data {
     username: json["username"],
     fullname: json["fullname"],
     email: json["email"],
+    gambar: json["gambar"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -59,5 +63,6 @@ class Data {
     "username": username,
     "fullname": fullname,
     "email": email,
+    "gambar": gambar,
   };
 }

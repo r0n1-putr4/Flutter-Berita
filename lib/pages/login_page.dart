@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:awesome_dialog/awesome_dialog.dart'
     show AnimType, AwesomeDialog, DialogType;
 import 'package:flutter/gestures.dart';
@@ -35,7 +37,7 @@ class _LoginPageState extends State<LoginPage> {
     try {
       isLoading = true;
       http.Response hasil = await http.post(
-        Uri.parse("${ApiConfig.baseUrl}/login.php"),
+        Uri.parse("${ApiConfig.baseUrl}/users/login"),
         body: {"username": username.text, "password": password.text},
       );
       final loginModel = loginModelFromJson(hasil.body);
@@ -48,7 +50,8 @@ class _LoginPageState extends State<LoginPage> {
           dataUser!.id,
           dataUser.username,
           dataUser.fullname,
-          dataUser.email
+          dataUser.email,
+          dataUser.gambar
         );
         Navigator.pushReplacementNamed(context, '/home');
       } else {
@@ -112,8 +115,9 @@ class _LoginPageState extends State<LoginPage> {
                           ? CircularProgressIndicator()
                           : ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              minimumSize: Size(double.infinity, 50),
+                              //minimumSize: Size(double.infinity, 50),
                               // Full width, height: 50
+                              //minimumSize: Size(double.infinity,50),
                               backgroundColor: Colors.red,
                               // Change button color
                               foregroundColor:

@@ -33,37 +33,37 @@ class BeritaModel {
 }
 
 class Datum {
-  String id;
+  int id;
   String judul;
   String isi;
-  String tglIndonesiaBerita;
   String gambar;
+  String tgl_berita;
   double rating;
 
   Datum({
     required this.id,
     required this.judul,
     required this.isi,
-    required this.tglIndonesiaBerita,
     required this.gambar,
+    required this.tgl_berita,
     required this.rating,
   });
 
   factory Datum.fromJson(Map<String, dynamic> json) => Datum(
-    id: json["id"],
-    judul: json["judul"],
-    isi: json["isi"],
-    tglIndonesiaBerita: json["tgl_indonesia_berita"],
+    id: json["id"], // Default 0 for integers
+    judul: json["judul"], // Default empty string
+    isi: json["isi"] ,
     gambar: json["gambar"],
-    rating: json["rating"]?.toDouble(),
+    tgl_berita: json["tgl_berita"],
+    rating: json["rating"].toDouble(), // Default 0.0
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "judul": judul,
     "isi": isi,
-    "tgl_indonesia_berita": tglIndonesiaBerita,
     "gambar": gambar,
+    "tgl_berita": tgl_berita,
     "rating": rating,
   };
 }

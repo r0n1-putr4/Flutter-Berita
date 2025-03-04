@@ -28,26 +28,27 @@ class _HomePageState extends State<HomePage> {
   String username = "";
   String fullname = "";
   String email = "";
+  String gambar = "";
 
   Future<List<Datum>?> _getData(String judul) async {
     try {
       http.Response hasil = await http.get(
-        Uri.parse("${ApiConfig.baseUrl}/get_berita.php?judul=${judul}"),
+        Uri.parse("${ApiConfig.baseUrl}/kontens?judul=${judul}"),
       );
       logger.d("Status ${beritaModelFromJson(hasil.body).success}");
       print("Status ${beritaModelFromJson(hasil.body).success}");
       return beritaModelFromJson(hasil.body).data;
     } catch (e) {
       print("Kesalahan ${e}");
+      logger.d("Kesalahan ${e} ${ApiConfig.baseUrl}/kontens?judul=${judul}");
     }
     return null;
   }
 
-  Future<void> _delBerita(String id) async {
+  Future<void> _delBerita(int id) async {
     try {
-      http.Response hasil = await http.post(
-        Uri.parse("${ApiConfig.baseUrl}/del_berita.php"),
-        body: {"id": id},
+      http.Response hasil = await http.delete(
+        Uri.parse("${ApiConfig.baseUrl}/kontens/$id")
       );
       final deleteModel = responseModelFromJson(hasil.body);
       if (deleteModel.success) {
@@ -78,11 +79,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _loadSession() async {
-    Map<String, String?> session = await SessionManager.getSession();
+    Map<String, dynamic> session = await SessionManager.getSession();
     setState(() {
       username = session['username']!;
       fullname = session['fullname']!;
       email = session['email']!;
+      gambar = session['gambar']!;
     });
   }
 
@@ -151,7 +153,7 @@ class _HomePageState extends State<HomePage> {
                 radius: 50, // Adjust size
                 backgroundColor: Colors.white, // Optional: Background color
                 backgroundImage: NetworkImage(
-                  "${ApiConfig.baseUrlImage}/IMG_20241228_104749795.jpg",
+                  "${ApiConfig.baseUrl}/images/$gambar",
                 ),
               ),
             ),
@@ -237,7 +239,7 @@ class _HomePageState extends State<HomePage> {
                           // Aligns text to the top
                           children: [
                             Image.network(
-                              berita[index].gambar,
+                              "${ApiConfig.baseUrl}/${berita[index].gambar}",
                               width: 80, // Adjust width
                               height: 80, // Adjust height
                               fit: BoxFit.cover,
@@ -259,7 +261,7 @@ class _HomePageState extends State<HomePage> {
                                             .visible, // Ensures text is shown fully
                                   ),
                                   Text(
-                                    berita[index].tglIndonesiaBerita,
+                                    berita[index].tgl_berita,
                                     style: TextStyle(
                                       fontSize: 16,
                                       color: Colors.grey[600],

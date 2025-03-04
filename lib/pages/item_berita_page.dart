@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_berita/models/berita_model.dart';
 import 'package:flutter_berita/models/berita_model.dart';
+import 'package:flutter_berita/utils/base_url.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class ItemBeritaPage extends StatelessWidget {
@@ -19,7 +20,7 @@ class ItemBeritaPage extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Image(image: NetworkImage(itemDataBerita.gambar)),
+              Image(image: NetworkImage("${ApiConfig.baseUrl}/${itemDataBerita.gambar}")),
               Text(
                 itemDataBerita.judul,
                 textAlign: TextAlign.center,
@@ -27,7 +28,7 @@ class ItemBeritaPage extends StatelessWidget {
               ),
               SizedBox(height: 15),
               Text(
-                itemDataBerita.tglIndonesiaBerita,
+                itemDataBerita.tgl_berita,
                 style: TextStyle(fontSize: 15),
               ),
               Row(
