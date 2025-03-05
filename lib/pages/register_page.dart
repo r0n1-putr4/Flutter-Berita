@@ -30,7 +30,7 @@ class _RegisterPageState extends State<RegisterPage> {
     try {
       isLoading = true;
       http.Response hasil = await http.post(
-        Uri.parse("${ApiConfig.baseUrl}/register.php"),
+        Uri.parse("${ApiConfig.baseUrl}/users"),
         body: {
           "username": username.text,
           "password": password.text,
