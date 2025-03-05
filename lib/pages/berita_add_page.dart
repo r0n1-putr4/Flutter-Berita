@@ -99,7 +99,7 @@ class _BeritaAddPageState extends State<BeritaAddPage> {
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (_) => const HomePage()),
-              (route) => false,
+          (route) => false,
         );
         ScaffoldMessenger.of(
           context,
@@ -159,8 +159,7 @@ class _BeritaAddPageState extends State<BeritaAddPage> {
                     // Full width, height: 50
                     backgroundColor: Colors.red,
                     // Change button color
-                    foregroundColor:
-                    Colors.white, // Change text color
+                    foregroundColor: Colors.white, // Change text color
                   ),
                   onPressed: () => _alertDialog(context),
                   child: Text("Pilih"),
@@ -195,8 +194,7 @@ class _BeritaAddPageState extends State<BeritaAddPage> {
                     // Full width, height: 50
                     backgroundColor: Colors.blue,
                     // Change button color
-                    foregroundColor:
-                    Colors.white, // Change text color
+                    foregroundColor: Colors.white, // Change text color
                   ),
                   onPressed: () {
                     setState(() {

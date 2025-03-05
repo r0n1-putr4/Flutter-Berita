@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> _delBerita(int id) async {
     try {
       http.Response hasil = await http.delete(
-        Uri.parse("${ApiConfig.baseUrl}/kontens/$id")
+        Uri.parse("${ApiConfig.baseUrl}/kontens/$id"),
       );
       final deleteModel = responseModelFromJson(hasil.body);
       if (deleteModel.success) {

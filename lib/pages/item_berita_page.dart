@@ -12,25 +12,24 @@ class ItemBeritaPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Berita"),
-      ),
+      appBar: AppBar(title: Text("Berita")),
       body: Padding(
         padding: EdgeInsets.all(10),
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Image(image: NetworkImage("${ApiConfig.baseUrl}/${itemDataBerita.gambar}")),
+              Image(
+                image: NetworkImage(
+                  "${ApiConfig.baseUrl}/${itemDataBerita.gambar}",
+                ),
+              ),
               Text(
                 itemDataBerita.judul,
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 15),
-              Text(
-                itemDataBerita.tgl_berita,
-                style: TextStyle(fontSize: 15),
-              ),
+              Text(itemDataBerita.tgl_berita, style: TextStyle(fontSize: 15)),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -48,7 +47,7 @@ class ItemBeritaPage extends StatelessWidget {
               Text(
                 itemDataBerita.isi,
                 textAlign: TextAlign.start,
-                style: TextStyle(fontSize: 25,),
+                style: TextStyle(fontSize: 25),
               ),
             ],
           ),

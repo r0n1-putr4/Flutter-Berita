@@ -4,7 +4,6 @@ import 'package:awesome_dialog/awesome_dialog.dart'
     show AnimType, AwesomeDialog, DialogType;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_berita/pages/home_page.dart';
 import 'package:flutter_berita/pages/register_page.dart';
 import 'package:logger/logger.dart';
 import 'package:http/http.dart' as http;
@@ -51,7 +50,7 @@ class _LoginPageState extends State<LoginPage> {
           dataUser.username,
           dataUser.fullname,
           dataUser.email,
-          dataUser.gambar
+          dataUser.gambar,
         );
         Navigator.pushReplacementNamed(context, '/home');
       } else {

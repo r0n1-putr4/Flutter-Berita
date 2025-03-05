@@ -44,7 +44,6 @@ class _RegisterPageState extends State<RegisterPage> {
           isLoading = false;
         });
 
-
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (_) => const LoginPage()),
