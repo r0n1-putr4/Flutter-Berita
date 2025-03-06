@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_berita/pages/home_page.dart';
-import 'package:flutter_berita/pages/login_page.dart';
 
 import '../utils/session.dart';
 
