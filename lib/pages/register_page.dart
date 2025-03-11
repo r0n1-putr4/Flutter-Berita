@@ -13,7 +13,6 @@ import 'package:flutter_berita/models/register_model.dart';
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
 
-
   @override
   State<RegisterPage> createState() => _RegisterPageState();
 }
