@@ -69,7 +69,7 @@ class _RegisterPageState extends State<RegisterPage> {
     } catch (e) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text("Kesalahan : ${e}")));
+      ).showSnackBar(SnackBar(content: Text("Kesalahan : $e")));
       setState(() {
         isLoading = false;
       });
