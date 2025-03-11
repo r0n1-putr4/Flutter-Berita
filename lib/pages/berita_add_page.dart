@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_berita/pages/home_page.dart';
+import 'package:flutter_berita/utils/costume_button.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
@@ -188,14 +189,9 @@ class _BeritaAddPageState extends State<BeritaAddPage> {
                   },
                 ),
                 SizedBox(height: 15),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: Size(double.infinity, 50),
-                    // Full width, height: 50
-                    backgroundColor: Colors.blue,
-                    // Change button color
-                    foregroundColor: Colors.white, // Change text color
-                  ),
+                CostumeButton(
+                  bgColor: Colors.red,
+                  labelButton: "SAVE",
                   onPressed: () {
                     setState(() {
                       if (_formKey.currentState!.validate()) {
@@ -203,7 +199,7 @@ class _BeritaAddPageState extends State<BeritaAddPage> {
                       }
                     });
                   },
-                  child: Text("SIMPAN"),
+                  labelColor: Colors.white,
                 ),
               ],
             ),
