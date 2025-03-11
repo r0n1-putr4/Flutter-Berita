@@ -5,6 +5,7 @@ import 'package:awesome_dialog/awesome_dialog.dart'
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_berita/pages/register_page.dart';
+import 'package:flutter_berita/utils/costume_button.dart';
 import 'package:logger/logger.dart';
 import 'package:http/http.dart' as http;
 import '../utils/base_url.dart';
@@ -112,16 +113,9 @@ class _LoginPageState extends State<LoginPage> {
                   child:
                       isLoading
                           ? CircularProgressIndicator()
-                          : ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              //minimumSize: Size(double.infinity, 50),
-                              // Full width, height: 50
-                              //minimumSize: Size(double.infinity,50),
-                              backgroundColor: Colors.red,
-                              // Change button color
-                              foregroundColor:
-                                  Colors.white, // Change text color
-                            ),
+                          : CostumeButton(
+                            bgColor: Colors.red,
+                            labelButton: "LOGIN",
                             onPressed: () {
                               setState(() {
                                 if (_formKey.currentState!.validate()) {
@@ -129,10 +123,7 @@ class _LoginPageState extends State<LoginPage> {
                                 }
                               });
                             },
-                            child: Text(
-                              "LOGIN",
-                              style: TextStyle(color: Colors.white),
-                            ),
+                            labelColor: Colors.white,
                           ),
                 ),
                 SizedBox(height: 20),
