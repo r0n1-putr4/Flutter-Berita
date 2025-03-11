@@ -2,6 +2,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_berita/pages/login_page.dart';
+import 'package:flutter_berita/utils/costume_button.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 
@@ -128,7 +129,9 @@ class _RegisterPageState extends State<RegisterPage> {
                   child:
                       isLoading
                           ? CircularProgressIndicator()
-                          : ElevatedButton(
+                          : CostumeButton(
+                            bgColor: Colors.red,
+                            labelButton: "SAVE",
                             onPressed: () {
                               setState(() {
                                 if (_formKey.currentState!.validate()) {
@@ -136,15 +139,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 }
                               });
                             },
-                            style: ElevatedButton.styleFrom(
-                              minimumSize: Size(double.infinity, 50),
-                              // Full width, height: 50
-                              backgroundColor: Colors.red,
-                              // Change button color
-                              foregroundColor:
-                                  Colors.white, // Change text color
-                            ),
-                            child: Text("SAVE"),
+                            labelColor: Colors.white,
                           ),
                 ),
                 SizedBox(height: 20),
