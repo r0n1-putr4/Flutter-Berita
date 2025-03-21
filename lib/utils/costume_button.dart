@@ -5,6 +5,8 @@ class CostumeButton extends StatelessWidget {
   final String labelButton;
   final VoidCallback onPressed;
   final Color labelColor;
+  final double sizeButton;
+
 
   const CostumeButton({
     super.key,
@@ -12,13 +14,14 @@ class CostumeButton extends StatelessWidget {
     required this.labelButton,
     required this.onPressed,
     required this.labelColor,
+    this.sizeButton = 1.0
   });
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        minimumSize: Size(MediaQuery.of(context).size.width * 0.5, 50),
+        minimumSize: Size(MediaQuery.of(context).size.width * sizeButton, 50),
         backgroundColor: bgColor,
       ),
       onPressed: () {

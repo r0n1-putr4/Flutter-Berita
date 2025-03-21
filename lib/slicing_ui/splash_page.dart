@@ -19,6 +19,7 @@ class SplashPage extends StatelessWidget {
                 labelButton: "Mulai",
                 onPressed: () {},
                 labelColor: Color(0xffE95322),
+                sizeButton: 0.5,
               ),
             ],
           ),
