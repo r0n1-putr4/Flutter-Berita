@@ -18,7 +18,7 @@ class CostumeButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        minimumSize: Size(double.infinity, 50),
+        minimumSize: Size(MediaQuery.of(context).size.width * 0.5, 50),
         backgroundColor: bgColor,
       ),
       onPressed: () {

@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:awesome_dialog/awesome_dialog.dart'
     show AnimType, AwesomeDialog, DialogType;
 import 'package:flutter/gestures.dart';

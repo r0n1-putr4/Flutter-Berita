@@ -3,7 +3,7 @@
 //     final loginModel = loginModelFromJson(jsonString);
 
 import 'dart:convert';
-import 'dart:ffi';
+
 
 LoginModel loginModelFromJson(String str) => LoginModel.fromJson(json.decode(str));
 
