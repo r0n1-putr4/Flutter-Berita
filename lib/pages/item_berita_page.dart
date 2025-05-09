@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_berita/models/berita_model.dart';
-import 'package:flutter_berita/models/berita_model.dart';
 import 'package:flutter_berita/utils/base_url.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
