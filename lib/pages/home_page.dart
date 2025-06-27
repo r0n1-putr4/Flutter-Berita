@@ -34,6 +34,9 @@ class _HomePageState extends State<HomePage> {
     try {
       http.Response hasil = await http.get(
         Uri.parse("${ApiConfig.baseUrl}/kontens?judul=${judul}"),
+        headers: {
+
+        }
       );
       logger.d("Status ${beritaModelFromJson(hasil.body).success}");
       print("Status ${beritaModelFromJson(hasil.body).success}");
@@ -254,7 +257,7 @@ class _HomePageState extends State<HomePage> {
                                   Text(
                                     berita[index].judul,
                                     textAlign: TextAlign.left,
-                                    style: TextStyle(fontSize: 24),
+                                    style: TextStyle(fontSize: 12),
                                     softWrap: true, // Ensures text wraps
                                     overflow:
                                         TextOverflow
