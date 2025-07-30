@@ -43,6 +43,7 @@ dependencies:
   flutter_slidable: ^4.0.0
   google_fonts: ^6.2.0
   flutter_advanced_drawer: ^1.4.0
+  syncfusion_flutter_gauges: ^24.2.6
 
 dev_dependencies:
   flutter_test:

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_berita/pages/berita_add_page.dart';
 import 'package:flutter_berita/pages/home_page.dart';
 import 'package:flutter_berita/pages/login_page.dart';
+import 'package:flutter_berita/pages/page_dht.dart';
 import 'package:flutter_berita/pages/splash_screen.dart';
 
 void main() {
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const SplashScreen(),
+      home: const PageDht(),
       routes: {
         '/home': (context) => HomePage(),
         '/login': (context) => LoginPage(),
