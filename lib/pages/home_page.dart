@@ -183,6 +183,7 @@ class _HomePageState extends State<HomePage> {
             return ListView.builder(
               itemCount: berita.length,
               itemBuilder: (context, index) {
+                Datum beritaItem = berita[index];
                 return Padding(
                   padding: const EdgeInsets.all(2.0),
                   child: GestureDetector(
@@ -190,7 +191,7 @@ class _HomePageState extends State<HomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => ItemBeritaPage(berita[index]),
+                          builder: (_) => ItemBeritaPage(beritaItem),
                         ),
                       );
                     },
@@ -214,7 +215,7 @@ class _HomePageState extends State<HomePage> {
                                       animType: AnimType.bottomSlide,
                                       title: 'Delete',
                                       desc:
-                                          'Apakah anda yakin ingin hapus ${berita[index].judul}?',
+                                          'Apakah anda yakin ingin hapus ${beritaItem.judul}?',
                                       buttonsTextStyle: const TextStyle(
                                         color: Colors.white,
                                       ),
@@ -242,7 +243,7 @@ class _HomePageState extends State<HomePage> {
                           // Aligns text to the top
                           children: [
                             Image.network(
-                              "${ApiConfig.baseUrl}/${berita[index].gambar}",
+                              "${ApiConfig.baseUrl}/kontens/gambar?filename=${beritaItem.gambar}",
                               width: 80, // Adjust width
                               height: 80, // Adjust height
                               fit: BoxFit.cover,

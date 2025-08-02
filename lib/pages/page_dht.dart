@@ -17,11 +17,12 @@ class _PageDhtState extends State<PageDht> {
   String _data = 'Loading...';
   double temperature = 0.0;
   int humidity = 0;
+  String gambar = "";
 
   Future<void> _fetchData() async {
     try {
       final response = await http.get(
-        Uri.parse('http://10.199.96.108:8080/nodeMcu/getDHT.php'),
+        Uri.parse('http://localhost:8080/nodeMcu/getDHT.php'),
       );
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
@@ -29,6 +30,7 @@ class _PageDhtState extends State<PageDht> {
           _data = json.toString();
           temperature = json['suhu'];
           humidity = json['kelembapan'];
+          gambar = json['gambar'];
         });
       } else {
         setState(() {
@@ -49,7 +51,7 @@ class _PageDhtState extends State<PageDht> {
 
     _fetchData(); // fetch initially
 
-    _timer = Timer.periodic(Duration(seconds: 10), (Timer t) {
+    _timer = Timer.periodic(Duration(seconds: 5), (Timer t) {
       _fetchData(); // fetch every 10 seconds
     });
   }
@@ -85,7 +87,6 @@ class _PageDhtState extends State<PageDht> {
                 Text(
                   'LAB-P2 JURUSAN TI',
                   style: TextStyle(color: Colors.white,fontSize: 20),
-
                 ),
                 SfRadialGauge(
                   backgroundColor: Colors.transparent, // penting!
@@ -214,6 +215,13 @@ class _PageDhtState extends State<PageDht> {
                       ],
                     ),
                   ],
+                ),
+
+                Image.network(
+                  "http://localhost:8080/nodeMcu/getGambar.php?file=$gambar",
+                 // Adjust height
+                  fit: BoxFit.cover,
+                  alignment: Alignment.topLeft,
                 ),
               ],
             ),

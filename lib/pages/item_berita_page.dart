@@ -19,7 +19,7 @@ class ItemBeritaPage extends StatelessWidget {
             children: [
               Image(
                 image: NetworkImage(
-                  "${ApiConfig.baseUrl}/${itemDataBerita.gambar}",
+                  "${ApiConfig.baseUrl}/kontens/gambar?filename=${itemDataBerita.gambar}",
                 ),
               ),
               Text(
