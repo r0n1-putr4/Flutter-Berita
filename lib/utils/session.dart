@@ -1,5 +1,3 @@
-
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SessionManager {
@@ -33,10 +31,6 @@ class SessionManager {
   // Clear session (logout)
   static Future<void> clearSession() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('id');
-    await prefs.remove('username');
-    await prefs.remove('fullname');
-    await prefs.remove('email');
-    await prefs.remove('gambar');
+    await prefs.clear();
   }
 }

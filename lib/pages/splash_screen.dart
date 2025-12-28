@@ -18,9 +18,10 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void checkSession() async {
-    Map<String, dynamic> session = await SessionManager.getSession();
-    Future.delayed(Duration(seconds: 2), () {
-      if (session['id'] != null) {
+    Future.delayed(Duration(seconds: 2), () async {
+      bool isLogin = await SessionManager.isLogin();
+
+      if (isLogin) {
         Navigator.pushReplacementNamed(context, '/home');
       } else {
         Navigator.pushReplacementNamed(context, '/login');
