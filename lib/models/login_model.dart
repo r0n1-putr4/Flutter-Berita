@@ -1,68 +1,69 @@
 // To parse this JSON data, do
 //
-//     final loginModel = loginModelFromJson(jsonString);
+//     final responseModelLogin = responseModelLoginFromJson(jsonString);
 
 import 'dart:convert';
 
+ResponseModelLogin responseModelLoginFromJson(String str) => ResponseModelLogin.fromJson(json.decode(str));
 
-LoginModel loginModelFromJson(String str) => LoginModel.fromJson(json.decode(str));
+String responseModelLoginToJson(ResponseModelLogin data) => json.encode(data.toJson());
 
-String loginModelToJson(LoginModel data) => json.encode(data.toJson());
-
-class LoginModel {
+class ResponseModelLogin {
   bool success;
   String message;
   Data? data;
 
-  LoginModel({
+  ResponseModelLogin({
     required this.success,
     required this.message,
     this.data,
   });
 
-  factory LoginModel.fromJson(Map<String, dynamic> json) => LoginModel(
+  factory ResponseModelLogin.fromJson(Map<String, dynamic> json) => ResponseModelLogin(
     success: json["success"],
     message: json["message"],
-    data: (json["data"] != null && json["data"] is Map<String, dynamic>)
-        ? Data.fromJson(json["data"])
-        : null, // ✅ Handle jika `data` kosong atau bukan object
+    data: json["data"] != null ? Data.fromJson(json["data"]) : null,
   );
 
   Map<String, dynamic> toJson() => {
     "success": success,
     "message": message,
-    "data": data?.toJson(), // ✅ Handle `null` dengan `?.`
+    if(data != null)  "data" : data!.toJson(),
   };
 }
 
 class Data {
   int id;
-  String username;
-  String fullname;
   String email;
-  String gambar;
+  String nama;
+  String noHp;
+  String password;
+  String alamat;
 
   Data({
     required this.id,
-    required this.username,
-    required this.fullname,
     required this.email,
-    required this.gambar,
+    required this.nama,
+    required this.noHp,
+    required this.password,
+    required this.alamat,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
     id: json["id"],
-    username: json["username"],
-    fullname: json["fullname"],
     email: json["email"],
-    gambar: json["gambar"],
+    nama: json["nama"],
+    noHp: json["no_hp"],
+    password: json["password"],
+    alamat: json["alamat"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "username": username,
-    "fullname": fullname,
     "email": email,
-    "gambar": gambar,
+    "nama": nama,
+    "no_hp": noHp,
+    "password": password,
+    "alamat": alamat,
   };
 }

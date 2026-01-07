@@ -156,7 +156,8 @@ class _HomePageState extends State<HomePage> {
                 radius: 50, // Adjust size
                 backgroundColor: Colors.white, // Optional: Background color
                 backgroundImage: NetworkImage(
-                  "${ApiConfig.baseUrl}/images/$gambar",
+                  gambar,
+                  scale: 1.0
                 ),
               ),
             ),
