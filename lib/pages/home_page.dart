@@ -161,12 +161,17 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            // ListTile(
-            //   title: Text("Profile ${ApiConfig.baseUrl}/images/$gambar"),
-            //   onTap: () {
-            //     null;
-            //   },
-            // ),
+            ListTile(
+              title: Text("Profile"),
+              onTap: () {
+                null;
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.home),
+              title: Text("Home"),
+              onTap: () {},
+            ),
           ],
         ),
       ),

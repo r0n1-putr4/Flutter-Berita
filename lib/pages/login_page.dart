@@ -38,7 +38,7 @@ class _LoginPageState extends State<LoginPage> {
         Uri.parse("${ApiConfig.baseUrl}/users/login"),
         body: {"username": username.text, "password": password.text},
       );
-      final loginModel = loginModelFromJson(hasil.body);
+      final loginModel = responseModelLoginFromJson(hasil.body);
       if (loginModel.success) {
         setState(() {
           isLoading = false;
