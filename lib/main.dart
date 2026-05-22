@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_berita/pages/berita_add_page.dart';
-import 'package:flutter_berita/pages/home_page.dart';
-import 'package:flutter_berita/pages/login_page.dart';
-import 'package:flutter_berita/pages/splash_screen.dart';
+import 'package:flutter_berita/views/berita_add_page.dart';
+import 'package:flutter_berita/views/home_page.dart';
+import 'package:flutter_berita/views/login_page.dart';
+import 'package:flutter_berita/views/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
