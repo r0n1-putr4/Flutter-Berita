@@ -1,16 +1,17 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_berita/providers/berita_provider.dart';
 import 'package:flutter_berita/utils/session.dart';
 import 'package:flutter_berita/models/berita_model.dart';
 import 'package:logger/logger.dart';
-import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:flutter_berita/models/response_model.dart';
 
 import '../utils/base_url.dart';
 import 'item_berita_page.dart';
+
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,7 +21,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late Future<List<Datum>?> dataJson;
   var logger = Logger();
   String judul = "";
   TextEditingController judulController = TextEditingController();
@@ -29,52 +29,6 @@ class _HomePageState extends State<HomePage> {
   String fullname = "";
   String email = "";
   String gambar = "";
-
-  Future<List<Datum>?> _getData(String judul) async {
-    try {
-      http.Response hasil = await http.get(
-        Uri.parse("${ApiConfig.baseUrl}/kontens?judul=${judul}"),
-        headers: {
-
-        }
-      );
-      logger.d("Status ${beritaModelFromJson(hasil.body).success}");
-      print("Status ${beritaModelFromJson(hasil.body).success}");
-      return beritaModelFromJson(hasil.body).data;
-    } catch (e) {
-      print("Kesalahan ${e}");
-      logger.d("Kesalahan ${e} ${ApiConfig.baseUrl}/kontens?judul=${judul}");
-    }
-    return null;
-  }
-
-  Future<void> _delBerita(int id) async {
-    try {
-      http.Response hasil = await http.delete(
-        Uri.parse("${ApiConfig.baseUrl}/kontens/$id"),
-      );
-      final deleteModel = responseModelFromJson(hasil.body);
-      if (deleteModel.success) {
-        setState(() {
-          dataJson = _getData(judul);
-        });
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(deleteModel.message)));
-      } else {
-        AwesomeDialog(
-          context: context,
-          dialogType: DialogType.warning,
-          animType: AnimType.scale,
-          title: 'Informasi Delete',
-          desc: deleteModel.message,
-          autoHide: const Duration(seconds: 2),
-        ).show();
-      }
-    } catch (e) {
-      logger.d("Kesalahan delete $e");
-    }
-  }
 
   void _logout() async {
     await SessionManager.clearSession();
@@ -96,11 +50,12 @@ class _HomePageState extends State<HomePage> {
     // TODO: implement initState
     super.initState();
     _loadSession();
-    dataJson = _getData(judul);
+    Future.microtask(() => context.read<BeritaProvider>().getBerita(""));
   }
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<BeritaProvider>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
@@ -110,7 +65,7 @@ class _HomePageState extends State<HomePage> {
           cursorColor: Colors.white,
           onSubmitted: (value) {
             setState(() {
-              dataJson = _getData(value);
+              // dataJson = _getData(value);
             });
           },
           decoration: InputDecoration(
@@ -155,10 +110,7 @@ class _HomePageState extends State<HomePage> {
               currentAccountPicture: CircleAvatar(
                 radius: 50, // Adjust size
                 backgroundColor: Colors.white, // Optional: Background color
-                backgroundImage: NetworkImage(
-                  gambar,
-                  scale: 1.0
-                ),
+                backgroundImage: NetworkImage(gambar, scale: 1.0),
               ),
             ),
             ListTile(
@@ -175,140 +127,131 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      body: FutureBuilder<List<Datum>?>(
-        future: dataJson,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text("Terjadi kesalahan saat mengambil data"));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text("Tidak ada data berita"));
-          } else {
-            List<Datum> berita = snapshot.data!;
-            return ListView.builder(
-              itemCount: berita.length,
-              itemBuilder: (context, index) {
-                Datum beritaItem = berita[index];
-                return Padding(
-                  padding: const EdgeInsets.all(2.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => ItemBeritaPage(beritaItem),
-                        ),
-                      );
-                    },
-                    child: Slidable(
-                      // Specify a key if the Slidable is dismissible.
-                      key: ValueKey(0),
-                      // The start action pane is the one at the left or the top side.
-                      startActionPane: ActionPane(
-                        // A motion is a widget used to control how the pane animates.
-                        motion: ScrollMotion(),
-
-                        children: [
-                          // A SlidableAction can have an icon and/or a label.
-                          SlidableAction(
-                            onPressed:
-                                (_) =>
-                                    AwesomeDialog(
-                                      context: context,
-                                      dialogType: DialogType.warning,
-                                      headerAnimationLoop: false,
-                                      animType: AnimType.bottomSlide,
-                                      title: 'Delete',
-                                      desc:
-                                          'Apakah anda yakin ingin hapus ${beritaItem.judul}?',
-                                      buttonsTextStyle: const TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                      showCloseIcon: true,
-                                      btnCancelOnPress: () {},
-                                      btnOkOnPress: () {
-                                        _delBerita(berita[index].id);
-                                      },
-                                    ).show(),
-                            backgroundColor: Color(0xFFFE4A49),
-                            foregroundColor: Colors.white,
-                            icon: Icons.delete,
-                            label: 'Delete',
+      body:
+          provider.isLoading
+              ? Center(child: CircularProgressIndicator())
+              : provider.berita.isEmpty
+              ? Center(child: Text("Tidak ada data"))
+              : ListView.builder(
+                itemCount: provider.berita.length,
+                itemBuilder: (context, index) {
+                  Datum beritaItem = provider.berita[index];
+                  return Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ItemBeritaPage(beritaItem),
                           ),
-                        ],
-                      ),
+                        );
+                      },
+                      child: Slidable(
+                        // Specify a key if the Slidable is dismissible.
+                        key: ValueKey(0),
+                        // The start action pane is the one at the left or the top side.
+                        startActionPane: ActionPane(
+                          // A motion is a widget used to control how the pane animates.
+                          motion: ScrollMotion(),
 
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        elevation: 3,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          // Aligns text to the top
                           children: [
-                            Image.network(
-                              "${ApiConfig.baseUrl}/kontens/gambar?filename=${beritaItem.gambar}",
-                              width: 80, // Adjust width
-                              height: 80, // Adjust height
-                              fit: BoxFit.cover,
-                              alignment: Alignment.topLeft,
-                            ),
-                            SizedBox(width: 10),
-                            // Space between image and text
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    berita[index].judul,
-                                    textAlign: TextAlign.left,
-                                    style: TextStyle(fontSize: 12),
-                                    softWrap: true, // Ensures text wraps
-                                    overflow:
-                                        TextOverflow
-                                            .visible, // Ensures text is shown fully
-                                  ),
-                                  Text(
-                                    berita[index].tgl_berita,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.grey[600],
-                                    ),
-                                  ),
-                                  SizedBox(height: 5),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      RatingBarIndicator(
-                                        rating: berita[index].rating,
-                                        itemBuilder:
-                                            (context, index) => Icon(
-                                              Icons.star,
-                                              color: Colors.amber,
-                                            ),
-                                        itemCount: 5,
-                                        itemSize: 15,
-                                        direction: Axis.horizontal,
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 5),
-                                ],
-                              ),
+                            // A SlidableAction can have an icon and/or a label.
+                            SlidableAction(
+                              onPressed:
+                                  (_) =>
+                                      AwesomeDialog(
+                                        context: context,
+                                        dialogType: DialogType.warning,
+                                        headerAnimationLoop: false,
+                                        animType: AnimType.bottomSlide,
+                                        title: 'Delete',
+                                        desc:
+                                            'Apakah anda yakin ingin hapus ${beritaItem.judul}?',
+                                        buttonsTextStyle: const TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                        showCloseIcon: true,
+                                        btnCancelOnPress: () {},
+                                        btnOkOnPress: () {
+                                          // _delBerita(beritaItem.id);
+                                        },
+                                      ).show(),
+                              backgroundColor: Color(0xFFFE4A49),
+                              foregroundColor: Colors.white,
+                              icon: Icons.delete,
+                              label: 'Delete',
                             ),
                           ],
                         ),
+
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          elevation: 3,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            // Aligns text to the top
+                            children: [
+                              Image.network(
+                                "${ApiConfig.baseUrl}/kontens/gambar?filename=${beritaItem.gambar}",
+                                width: 80, // Adjust width
+                                height: 80, // Adjust height
+                                fit: BoxFit.cover,
+                                alignment: Alignment.topLeft,
+                              ),
+                              SizedBox(width: 10),
+                              // Space between image and text
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      beritaItem.judul,
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(fontSize: 12),
+                                      softWrap: true, // Ensures text wraps
+                                      overflow:
+                                          TextOverflow
+                                              .visible, // Ensures text is shown fully
+                                    ),
+                                    Text(
+                                      beritaItem.tgl_berita,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                    SizedBox(height: 5),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        RatingBarIndicator(
+                                          rating: beritaItem.rating,
+                                          itemBuilder:
+                                              (context, index) => Icon(
+                                                Icons.star,
+                                                color: Colors.amber,
+                                              ),
+                                          itemCount: 5,
+                                          itemSize: 15,
+                                          direction: Axis.horizontal,
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 5),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
-            );
-          }
-        },
-      ),
+                  );
+                },
+              ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.redAccent,
         child: Icon(Icons.add, size: 30, color: Colors.white),

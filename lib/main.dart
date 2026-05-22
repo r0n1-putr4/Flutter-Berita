@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_berita/providers/berita_provider.dart';
 import 'package:flutter_berita/views/berita_add_page.dart';
 import 'package:flutter_berita/views/home_page.dart';
 import 'package:flutter_berita/views/login_page.dart';
 import 'package:flutter_berita/views/splash_screen.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => BeritaProvider())
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -29,4 +38,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
