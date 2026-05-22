@@ -1,7 +1,6 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_berita/pages/login_page.dart';
 import 'package:flutter_berita/utils/costume_button.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
@@ -9,6 +8,8 @@ import 'dart:async';
 import '../utils/base_url.dart';
 import '../utils/costume_input.dart';
 import 'package:flutter_berita/models/register_model.dart';
+
+import 'login_page.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});

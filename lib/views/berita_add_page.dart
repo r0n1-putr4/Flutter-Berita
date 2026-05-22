@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_berita/pages/home_page.dart';
 import 'package:flutter_berita/utils/costume_button.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
@@ -9,6 +8,7 @@ import 'package:flutter_berita/models/register_model.dart';
 
 import '../utils/base_url.dart';
 import '../utils/costume_input.dart';
+import 'home_page.dart';
 
 class BeritaAddPage extends StatefulWidget {
   const BeritaAddPage({super.key});

@@ -1,25 +1,25 @@
 // To parse this JSON data, do
 //
-//     final responseModelLogin = responseModelLoginFromJson(jsonString);
+//     final loginModel = loginModelFromJson(jsonString);
 
 import 'dart:convert';
 
-ResponseModelLogin responseModelLoginFromJson(String str) => ResponseModelLogin.fromJson(json.decode(str));
+LoginModel loginModelFromJson(String str) => LoginModel.fromJson(json.decode(str));
 
-String responseModelLoginToJson(ResponseModelLogin data) => json.encode(data.toJson());
+String loginModelToJson(LoginModel data) => json.encode(data.toJson());
 
-class ResponseModelLogin {
+class LoginModel {
   bool success;
   String message;
   Data? data;
 
-  ResponseModelLogin({
+  LoginModel({
     required this.success,
     required this.message,
     this.data,
   });
 
-  factory ResponseModelLogin.fromJson(Map<String, dynamic> json) => ResponseModelLogin(
+  factory LoginModel.fromJson(Map<String, dynamic> json) => LoginModel(
     success: json["success"],
     message: json["message"],
     data: json["data"] != null ? Data.fromJson(json["data"]) : null,
@@ -34,36 +34,32 @@ class ResponseModelLogin {
 
 class Data {
   int id;
+  String username;
   String email;
-  String nama;
-  String noHp;
-  String password;
-  String alamat;
+  String fullname;
+  String gambar;
 
   Data({
     required this.id,
+    required this.username,
     required this.email,
-    required this.nama,
-    required this.noHp,
-    required this.password,
-    required this.alamat,
+    required this.fullname,
+    required this.gambar,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
     id: json["id"],
+    username: json["username"],
     email: json["email"],
-    nama: json["nama"],
-    noHp: json["no_hp"],
-    password: json["password"],
-    alamat: json["alamat"],
+    fullname: json["fullname"],
+    gambar: json["gambar"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
+    "username": username,
     "email": email,
-    "nama": nama,
-    "no_hp": noHp,
-    "password": password,
-    "alamat": alamat,
+    "fullname": fullname,
+    "gambar": gambar,
   };
 }

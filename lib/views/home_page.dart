@@ -1,6 +1,5 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_berita/pages/item_berita_page.dart';
 import 'package:flutter_berita/utils/session.dart';
 import 'package:flutter_berita/models/berita_model.dart';
 import 'package:logger/logger.dart';
@@ -11,6 +10,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_berita/models/response_model.dart';
 
 import '../utils/base_url.dart';
+import 'item_berita_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

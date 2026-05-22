@@ -2,14 +2,14 @@ import 'package:awesome_dialog/awesome_dialog.dart'
     show AnimType, AwesomeDialog, DialogType;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_berita/pages/register_page.dart';
 import 'package:flutter_berita/utils/costume_button.dart';
+import 'package:flutter_berita/views/register_page.dart';
 import 'package:logger/logger.dart';
 import 'package:http/http.dart' as http;
+import '../models/login_model.dart';
 import '../utils/base_url.dart';
 import '../utils/costume_input.dart';
 import '../utils/session.dart';
-import 'package:flutter_berita/models/login_model.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -38,7 +38,7 @@ class _LoginPageState extends State<LoginPage> {
         Uri.parse("${ApiConfig.baseUrl}/users/login"),
         body: {"username": username.text, "password": password.text},
       );
-      final loginModel = responseModelLoginFromJson(hasil.body);
+      final loginModel = loginModelFromJson(hasil.body);
       if (loginModel.success) {
         setState(() {
           isLoading = false;
