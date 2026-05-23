@@ -64,9 +64,7 @@ class _HomePageState extends State<HomePage> {
           style: TextStyle(color: Colors.white),
           cursorColor: Colors.white,
           onSubmitted: (value) {
-            setState(() {
-              // dataJson = _getData(value);
-            });
+            context.read<BeritaProvider>().getBerita(value);
           },
           decoration: InputDecoration(
             hintStyle: TextStyle(color: Colors.white),
@@ -173,8 +171,14 @@ class _HomePageState extends State<HomePage> {
                                         ),
                                         showCloseIcon: true,
                                         btnCancelOnPress: () {},
-                                        btnOkOnPress: () {
-                                          // _delBerita(beritaItem.id);
+                                        btnOkOnPress: ()  async {
+                                         String hasildel = await provider.deleteBerita(beritaItem.id);
+
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(content: Text(hasildel)),
+                                          );
                                         },
                                       ).show(),
                               backgroundColor: Color(0xFFFE4A49),

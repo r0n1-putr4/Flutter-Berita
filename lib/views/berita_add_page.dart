@@ -1,14 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_berita/providers/berita_provider.dart';
 import 'package:flutter_berita/utils/costume_button.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
-import 'package:flutter_berita/models/register_model.dart';
+import 'package:provider/provider.dart';
 
-import '../utils/base_url.dart';
 import '../utils/costume_input.dart';
-import 'home_page.dart';
 
 class BeritaAddPage extends StatefulWidget {
   const BeritaAddPage({super.key});
@@ -25,7 +23,6 @@ class _BeritaAddPageState extends State<BeritaAddPage> {
   final picker = ImagePicker();
   var logger = Logger();
 
-  bool isLoading = false;
   final _formKey = GlobalKey<FormState>();
 
   void _alertDialog(BuildContext context) {
@@ -70,59 +67,10 @@ class _BeritaAddPageState extends State<BeritaAddPage> {
     }
   }
 
-  Future<void> _uploadImage(BuildContext context) async {
-    try {
-      isLoading = true;
-      if (_image == null) {
-        setState(() {
-          isLoading = false;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Please select an image and enter text.")),
-        );
-        return;
-      }
-
-      final url = Uri.parse('${ApiConfig.baseUrl}/kontens');
-      var request = http.MultipartRequest('POST', url);
-      request.fields['judul'] = judul.text;
-      request.fields['isi'] = isiBerita.text;
-      request.files.add(
-        await http.MultipartFile.fromPath('gambar', _image!.path),
-      );
-      http.StreamedResponse streamedResponse = await request.send();
-      http.Response response = await http.Response.fromStream(streamedResponse);
-      final uploadResponse = registerModelFromJson(response.body);
-      if (uploadResponse.success) {
-        setState(() {
-          isLoading = false;
-        });
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (_) => const HomePage()),
-          (route) => false,
-        );
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(uploadResponse.message)));
-      } else {
-        setState(() {
-          isLoading = false;
-        });
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(uploadResponse.message)));
-      }
-    } catch (e) {
-      setState(() {
-        isLoading = false;
-      });
-      logger.d("Pesan Error ${e.toString()}");
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final provider = context.watch<BeritaProvider>();
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
@@ -189,17 +137,51 @@ class _BeritaAddPageState extends State<BeritaAddPage> {
                   },
                 ),
                 SizedBox(height: 15),
-                CostumeButton(
-                  bgColor: Colors.red,
-                  labelButton: "SAVE",
-                  onPressed: () {
-                    setState(() {
-                      if (_formKey.currentState!.validate()) {
-                        _uploadImage(context);
-                      }
-                    });
-                  },
-                  labelColor: Colors.white,
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: Size(double.infinity, 50),
+                    // Full width, height: 50
+                    backgroundColor: Colors.red,
+                    // Change button color
+                    foregroundColor: Colors.white, // Change text color
+                  ),
+                  onPressed:
+                      provider.isLoading
+                          ? null
+                          : () async {
+                            if (_formKey.currentState!.validate()) {
+                              if (_image == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      "Pilih gambar terlebih dahulu",
+                                    ),
+                                  ),
+                                );
+                                return;
+                              }
+
+                              String pesan = await context
+                                  .read<BeritaProvider>()
+                                  .addBerita(
+                                    judul.text,
+                                    isiBerita.text,
+                                    _image!,
+                                  );
+
+                              ScaffoldMessenger.of(
+                                context,
+                              ).showSnackBar(SnackBar(content: Text("$pesan")));
+
+                              if(provider.success){
+                                Navigator.pushNamed(context, "/home");
+                              }
+                            }
+                          },
+                  child:
+                      provider.isLoading
+                          ? CircularProgressIndicator()
+                          : Text("SAVE"),
                 ),
               ],
             ),
