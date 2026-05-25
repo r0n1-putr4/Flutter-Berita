@@ -1,8 +1,10 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_berita/providers/user_provider.dart';
 import 'package:flutter_berita/utils/costume_button.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'dart:async';
 
 import '../utils/base_url.dart';
@@ -26,59 +28,10 @@ class _RegisterPageState extends State<RegisterPage> {
   var fullName = TextEditingController();
   var email = TextEditingController();
 
-  bool isLoading = false;
-
-  Future<void> _register() async {
-    try {
-      isLoading = true;
-      http.Response hasil = await http.post(
-        Uri.parse("${ApiConfig.baseUrl}/users"),
-        body: {
-          "username": username.text,
-          "password": password.text,
-          "fullname": fullName.text,
-          "email": email.text,
-        },
-      );
-      final registerModel = registerModelFromJson(hasil.body);
-      if (registerModel.success) {
-        setState(() {
-          isLoading = false;
-        });
-
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (_) => const LoginPage()),
-          (route) => false,
-        );
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(registerModel.message)));
-      } else {
-        setState(() {
-          isLoading = false;
-        });
-        AwesomeDialog(
-          context: context,
-          dialogType: DialogType.warning,
-          animType: AnimType.scale,
-          title: 'Informasi Login',
-          desc: registerModel.message,
-          autoHide: const Duration(seconds: 2),
-        ).show();
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Kesalahan : $e")));
-      setState(() {
-        isLoading = false;
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final provider = context.watch<UserProvider>();
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
@@ -126,22 +79,38 @@ class _RegisterPageState extends State<RegisterPage> {
                   textInputType: TextInputType.emailAddress,
                 ),
                 SizedBox(height: 20),
-                Center(
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: Size(double.infinity, 50),
+                    // Full width, height: 50
+                    backgroundColor: Colors.red,
+                    // Change button color
+                    foregroundColor: Colors.white, // Change text color
+                  ),
+                  onPressed:
+                  provider.isLoading
+                      ? null
+                      : () async {
+                    if (_formKey.currentState!.validate()) {
+
+
+                      String pesan = await context
+                          .read<UserProvider>()
+                          .register(username.text,password.text,fullName.text,email.text);
+
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text("$pesan")));
+
+                      if(provider.success){
+                        Navigator.pushNamed(context, "/login");
+                      }
+                    }
+                  },
                   child:
-                      isLoading
-                          ? CircularProgressIndicator()
-                          : CostumeButton(
-                            bgColor: Colors.red,
-                            labelButton: "SAVE",
-                            onPressed: () {
-                              setState(() {
-                                if (_formKey.currentState!.validate()) {
-                                  _register();
-                                }
-                              });
-                            },
-                            labelColor: Colors.white,
-                          ),
+                  provider.isLoading
+                      ? CircularProgressIndicator()
+                      : Text("SAVE"),
                 ),
                 SizedBox(height: 20),
                 RichText(

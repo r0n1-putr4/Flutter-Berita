@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_berita/providers/berita_provider.dart';
+import 'package:flutter_berita/providers/user_provider.dart';
 import 'package:flutter_berita/views/berita_add_page.dart';
 import 'package:flutter_berita/views/home_page.dart';
 import 'package:flutter_berita/views/login_page.dart';
@@ -10,7 +11,8 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => BeritaProvider())
+        ChangeNotifierProvider(create: (_) => BeritaProvider()),
+        ChangeNotifierProvider(create: (_) => UserProvider())
       ],
       child: const MyApp(),
     ),
