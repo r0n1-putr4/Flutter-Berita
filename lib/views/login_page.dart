@@ -6,7 +6,9 @@ import 'package:flutter_berita/utils/costume_button.dart';
 import 'package:flutter_berita/views/register_page.dart';
 import 'package:logger/logger.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import '../models/login_model.dart';
+import '../providers/user_provider.dart';
 import '../utils/base_url.dart';
 import '../utils/costume_input.dart';
 import '../utils/session.dart';
@@ -26,55 +28,9 @@ class _LoginPageState extends State<LoginPage> {
   var logger = Logger();
 
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
-  Future<void> _login() async {
-    try {
-      isLoading = true;
-      http.Response hasil = await http.post(
-        Uri.parse("${ApiConfig.baseUrl}/users/login"),
-        body: {"username": username.text, "password": password.text},
-      );
-      final loginModel = loginModelFromJson(hasil.body);
-      if (loginModel.success) {
-        setState(() {
-          isLoading = false;
-        });
-        final dataUser = loginModel.data;
-        await SessionManager.saveSession(
-          dataUser!.id,
-          dataUser.username,
-          dataUser.fullname,
-          dataUser.email,
-          dataUser.gambar,
-        );
-        Navigator.pushReplacementNamed(context, '/home');
-      } else {
-        setState(() {
-          isLoading = false;
-        });
-        AwesomeDialog(
-          context: context,
-          dialogType: DialogType.warning,
-          animType: AnimType.scale,
-          title: 'Informasi Login',
-          desc: loginModel.message,
-          autoHide: const Duration(seconds: 2),
-        ).show();
-      }
-    } catch (e) {
-      setState(() {
-        isLoading = false;
-      });
-      logger.d("Kesalahan ${e}");
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final provider = context.watch<UserProvider>();
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
@@ -107,22 +63,43 @@ class _LoginPageState extends State<LoginPage> {
                   textInputType: TextInputType.text,
                 ),
                 SizedBox(height: 20),
-                Center(
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: Size(double.infinity, 50),
+                    // Full width, height: 50
+                    backgroundColor: Colors.red,
+                    // Change button color
+                    foregroundColor: Colors.white, // Change text color
+                  ),
+                  onPressed:
+                      provider.isLoading
+                          ? null
+                          : () async {
+                            if (_formKey.currentState!.validate()) {
+                              String pesan = await context
+                                  .read<UserProvider>()
+                                  .login(username.text, password.text);
+
+                              ScaffoldMessenger.of(
+                                context,
+                              ).showSnackBar(SnackBar(content: Text("$pesan")));
+
+                              if (provider.success) {
+                                await SessionManager.saveSession(
+                                  provider.user!.id,
+                                  provider.user!.username,
+                                  provider.user!.fullname,
+                                  provider.user!.email,
+                                  provider.user!.gambar,
+                                );
+                                Navigator.pushNamed(context, "/home");
+                              }
+                            }
+                          },
                   child:
-                      isLoading
+                      provider.isLoading
                           ? CircularProgressIndicator()
-                          : CostumeButton(
-                            bgColor: Colors.red,
-                            labelButton: "LOGIN",
-                            onPressed: () {
-                              setState(() {
-                                if (_formKey.currentState!.validate()) {
-                                  _login();
-                                }
-                              });
-                            },
-                            labelColor: Colors.white,
-                          ),
+                          : Text("SAVE"),
                 ),
                 SizedBox(height: 20),
                 RichText(
