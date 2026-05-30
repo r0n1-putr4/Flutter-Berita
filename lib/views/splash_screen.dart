@@ -14,18 +14,9 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    checkSession();
-  }
-
-  void checkSession() async {
+    // checkSession();
     Future.delayed(Duration(seconds: 2), () async {
-      bool isLogin = await SessionManager.isLogin();
-
-      if (isLogin) {
-        Navigator.pushReplacementNamed(context, '/home');
-      } else {
-        Navigator.pushReplacementNamed(context, '/login');
-      }
+      Navigator.pushReplacementNamed(context, '/home');
     });
   }
 

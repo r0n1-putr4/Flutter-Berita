@@ -1,26 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_berita/providers/berita_provider.dart';
 import 'package:flutter_berita/providers/user_provider.dart';
+import 'package:flutter_berita/utils/session.dart';
 import 'package:flutter_berita/views/berita_add_page.dart';
 import 'package:flutter_berita/views/home_page.dart';
 import 'package:flutter_berita/views/login_page.dart';
 import 'package:flutter_berita/views/splash_screen.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  bool isLogin = await SessionManager.isLogin();
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => BeritaProvider()),
-        ChangeNotifierProvider(create: (_) => UserProvider())
+        ChangeNotifierProvider(create: (_) => UserProvider()),
       ],
-      child: const MyApp(),
+      child: MyApp(isLogin: isLogin),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool isLogin;
+
+  const MyApp({super.key, this.isLogin = false});
 
   // This widget is the root of your application.
   @override
@@ -31,7 +37,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const SplashScreen(),
+      home: isLogin ? const SplashScreen() : const LoginPage(),
       routes: {
         '/home': (context) => HomePage(),
         '/login': (context) => LoginPage(),

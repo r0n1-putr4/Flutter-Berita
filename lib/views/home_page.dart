@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_berita/providers/berita_provider.dart';
 import 'package:flutter_berita/utils/session.dart';
 import 'package:flutter_berita/models/berita_model.dart';
+import 'package:flutter_berita/views/berita_add_page.dart';
 import 'package:logger/logger.dart';
 import 'dart:async';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -10,7 +11,6 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../utils/base_url.dart';
 import 'item_berita_page.dart';
-import 'package:flutter/foundation.dart';
 
 import 'package:provider/provider.dart';
 
@@ -30,6 +30,30 @@ class _HomePageState extends State<HomePage> {
   String fullname = "";
   String email = "";
   String gambar = "";
+
+  int _pilBottomNav = 0;
+
+  void _klikBottomNav(int index) {
+    setState(() {
+      _pilBottomNav = index;
+    });
+    if (index == 0) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => BeritaAddPage()),
+      );
+    }else if(index == 1) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => BeritaAddPage()),
+      );
+    }else if(index == 2) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => BeritaAddPage()),
+      );
+    }
+  }
 
   void _logout() async {
     await SessionManager.clearSession();
@@ -96,36 +120,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      drawer: Drawer(
-        // backgroundColor: Colors.white,
-        child: ListView(
-          children: [
-            UserAccountsDrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue, // Header background color
-              ),
-              accountName: Text(fullname),
-              accountEmail: Text(email),
-              currentAccountPicture: CircleAvatar(
-                radius: 50, // Adjust size
-                backgroundColor: Colors.white, // Optional: Background color
-                backgroundImage: NetworkImage(gambar, scale: 1.0),
-              ),
-            ),
-            ListTile(
-              title: Text("Profile"),
-              onTap: () {
-                null;
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.home),
-              title: Text("Home"),
-              onTap: () {},
-            ),
-          ],
-        ),
-      ),
+
       body:
           provider.isLoading
               ? Center(child: CircularProgressIndicator())
@@ -172,8 +167,9 @@ class _HomePageState extends State<HomePage> {
                                         ),
                                         showCloseIcon: true,
                                         btnCancelOnPress: () {},
-                                        btnOkOnPress: ()  async {
-                                         String hasildel = await provider.deleteBerita(beritaItem.id);
+                                        btnOkOnPress: () async {
+                                          String hasildel = await provider
+                                              .deleteBerita(beritaItem.id);
 
                                           ScaffoldMessenger.of(
                                             context,
@@ -263,6 +259,17 @@ class _HomePageState extends State<HomePage> {
         onPressed: () {
           Navigator.pushReplacementNamed(context, '/addBerita');
         },
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        onTap: _klikBottomNav,
+        currentIndex: _pilBottomNav,
+        selectedItemColor: Colors.black,
+        unselectedItemColor: Colors.grey.shade500,
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.grid_3x3), label: "GRID"),
+          BottomNavigationBarItem(icon: Icon(Icons.list), label: "List"),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Form"),
+        ],
       ),
     );
   }
